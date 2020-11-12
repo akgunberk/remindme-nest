@@ -1,16 +1,7 @@
+import { CreateTaskDto } from "./create-task.dto"
+
 export class CreateSubscriptionDto {
-    readonly subscription: {
-        endpoint: string,
-        timeZone: string,
-        keys: {
-            auth: string,
-            p256hd: string,
-        }
-    }
+    readonly subscription: CreateSubscriptionDto
     readonly timeZone: string
-    readonly task: {
-        payload: string,
-        cron: string,
-        active: boolean
-    }[]
+    readonly task: CreateTaskDto[]
 }

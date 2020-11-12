@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateSubscriptionDto } from 'src/dto/create-subscription.dto';
 import { SubscriptionService } from './subscription.service';
 
@@ -6,12 +6,17 @@ import { SubscriptionService } from './subscription.service';
 export class SubscriptionsController {
     constructor(private readonly subscriptionService: SubscriptionService) { }
     @Get()
-    GetSubscriptions() {
+    GetAllSubscriptions() {
         return this.subscriptionService.findAll();
     }
 
-    @Post()
+    @Get(':id')
+    GetSubscriptionById(@Param() id: string) {
+        return this.subscriptionService.findById(id);
+    }
+
+    @Post('create')
     CreateSubscription(@Body() createSubscriptionDto: CreateSubscriptionDto) {
-        return this.subscriptionService.create(createSubscriptionDto);
+        return this.subscriptionService.createSubscription(createSubscriptionDto);
     }
 }

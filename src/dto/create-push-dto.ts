@@ -1,8 +1,8 @@
 export class CreatePushDto {
     endpoint: string;
-    timeZone: string;
+    expirationTime: string;
     keys: {
         auth: string;
-        p256hd: string;
+        p256dh: string;
     }
 }

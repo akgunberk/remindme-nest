@@ -1,32 +1,33 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Subscription, SubscriptionDocument } from '../schema/subscription.schema';
 import { CreateSubscriptionDto } from '../dto/create-subscription.dto';
 import { CreateTaskDto } from 'src/dto/create-task.dto';
-import { Push } from 'src/schema/push.schema';
-import { Task } from 'src/schema/task.schema';
+import { Push, PushDocument } from 'src/schema/push.schema';
+import { Task, TaskDocument } from 'src/schema/task.schema';
+import { CreatePushDto } from 'src/dto/create-push-dto';
 
 @Injectable()
 export class SubscriptionService {
-    constructor(@InjectModel(Subscription.name) private subscriptionModel: Model<SubscriptionDocument>) { }
+    constructor(
+        @InjectModel(Subscription.name) private subscriptionModel: Model<SubscriptionDocument>,
+        @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
+        @InjectModel(Push.name) private pushModel: Model<PushDocument>
+    ) { }
 
     async createSubscription(createSubscriptionDto: CreateSubscriptionDto): Promise<Subscription> {
 
-        const createdSubscription = new this.subscriptionModel(createSubscriptionDto)
-            .populate(Push.name)
-            .populate(Task.name);
+        const createdPush = await this.pushModel.create(createSubscriptionDto.subscription);
 
-        return createdSubscription.save();
-    }
 
-    async createTask(createTaskDto: CreateTaskDto): Promise<Subscription> {
-        const createdTask = new this.subscriptionModel(createTaskDto);
-        return createdTask.save();
-    }
-    async createPush(createPushDto: CreateSubscriptionDto): Promise<Subscription> {
-        const createdSubscription = new this.subscriptionModel(createPushDto);
-        return createdSubscription.save();
+        return await this.subscriptionModel.create(
+            {
+                timeZone: createSubscriptionDto.timeZone,
+                subscription: createdPush._id,
+                tasks: []
+            })
+
     }
 
     async findAll(): Promise<Subscription[]> {

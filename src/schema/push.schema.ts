@@ -9,12 +9,9 @@ export class Push {
     endpoint: string;
 
     @Prop({ required: true })
-    expirationTime: number;
+    expirationTime: string;
 
-    @Prop(raw({
-        auth: { type: String, required: true },
-        p256dh: { type: String, required: true }
-    }))
+    @Prop()
     keys: { auth: string, p256dh: string };
 }
 

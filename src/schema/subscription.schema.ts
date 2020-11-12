@@ -7,11 +7,11 @@ export type SubscriptionDocument = Subscription & Document;
 
 @Schema()
 export class Subscription {
-    @Prop({ type: Types.ObjectId, ref: Push.name })
-    subscription: Push;
-
     @Prop({ required: true })
     timeZone: string;
+
+    @Prop({ type: Types.ObjectId, ref: Push.name })
+    subscription: Push;
 
     @Prop({ type: Types.ObjectId, ref: Task.name })
     tasks: Task[];

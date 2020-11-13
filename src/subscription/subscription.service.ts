@@ -16,9 +16,7 @@ export class SubscriptionService {
     ) { }
 
     async createSubscription(createSubscriptionDto: CreateSubscriptionDto): Promise<Subscription> {
-
         const createdPush = await this.pushModel.create(createSubscriptionDto.subscription);
-
         return await this.subscriptionModel.create(
             {
                 timeZone: createSubscriptionDto.timeZone,
@@ -28,10 +26,8 @@ export class SubscriptionService {
     }
 
     async createTask(id: string, createTaskDto: CreateTaskDto): Promise<Subscription> {
-
         let { message, cron, active } = createTaskDto;
         const createdTask = await this.taskModel.create({ message, cron, active });
-
         return await this.subscriptionModel.
             findByIdAndUpdate(id, { $push: { Task: createdTask._id } }, { new: true })
             .populate(Push.name)
@@ -41,14 +37,21 @@ export class SubscriptionService {
             });
     }
 
-
-
     async findAll(): Promise<Subscription[]> {
-        return this.subscriptionModel.find().exec();
+        return this.subscriptionModel
+            .find()
+            .lean()
+            .exec();
     }
 
     async findById(id: string): Promise<Subscription> {
-        return this.subscriptionModel.findById(id).populate(Push.name).exec();
+        return this.subscriptionModel
+            .findById(id)
+            .populate(Push.name)
+            .populate({
+                path: 'Task',
+                model: this.taskModel
+            }).exec();
     }
 }
 

@@ -11,10 +11,10 @@ export class Subscription {
     timeZone: string;
 
     @Prop({ type: Types.ObjectId, ref: Push.name })
-    subscription: Push;
+    Push: Push;
 
     @Prop({ type: Types.ObjectId, ref: Task.name })
-    tasks: Task[];
+    Task: Task[];
 }
 
 export const SubscriptionSchema = SchemaFactory.createForClass(Subscription);

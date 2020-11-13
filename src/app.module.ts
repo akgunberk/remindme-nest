@@ -14,6 +14,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
         useNewUrlParser: true,
+        useFindAndModify: false,
         connectionFactory: (connection) => {
           connection.plugin(require('mongoose-autopopulate'));
           return connection;

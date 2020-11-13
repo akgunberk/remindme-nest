@@ -11,18 +11,20 @@ export class SubscriptionsController {
         return this.subscriptionService.findAll();
     }
 
+    @Post('')
+    async CreateSubscription(@Body() createSubscriptionDto: CreateSubscriptionDto) {
+        return await this.subscriptionService.createSubscription(createSubscriptionDto);
+    }
+
     @Get(':id')
-    GetSubscriptionById(@Param() id: string) {
-        return this.subscriptionService.findById(id);
+    async GetSubscriptionById(@Param() param: { id: string }) {
+        return await this.subscriptionService.findById(param.id);
     }
 
-    @Post('create')
-    CreateSubscription(@Body() createSubscriptionDto: CreateSubscriptionDto) {
-        return this.subscriptionService.createSubscription(createSubscriptionDto);
+    @Post(':id')
+    CreateTask(@Body() createTaskDto: CreateTaskDto, @Param() param: { id: string }) {
+        return this.subscriptionService.createTask(param.id, createTaskDto);
     }
 
-    @Post(':id/task')
-    CreateTask(@Body() createTaskDto: CreateTaskDto) {
-        return this.subscriptionService.createTask(createTaskDto);
-    }
+
 }

@@ -1,5 +1,5 @@
 export class CreateTaskDto {
-    readonly payload: string
+    readonly message: string
     readonly cron: string
     readonly active: boolean
 }

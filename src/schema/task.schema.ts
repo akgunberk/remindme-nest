@@ -6,7 +6,7 @@ export type TaskDocument = Task & Document;
 @Schema()
 export class Task {
     @Prop()
-    payload: string;
+    message: string;
 
     @Prop()
     cron: string;

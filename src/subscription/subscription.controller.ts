@@ -3,7 +3,7 @@ import { CreateSubscriptionDto } from 'src/dto/create-subscription.dto';
 import { CreateTaskDto } from 'src/dto/create-task.dto';
 import { SubscriptionService } from './subscription.service';
 
-@Controller('subscriptions')
+@Controller('subscribe')
 export class SubscriptionsController {
     constructor(private readonly subscriptionService: SubscriptionService) { }
     @Get()
@@ -11,7 +11,7 @@ export class SubscriptionsController {
         return this.subscriptionService.findAll();
     }
 
-    @Post('')
+    @Post()
     async CreateSubscription(@Body() createSubscriptionDto: CreateSubscriptionDto) {
         return await this.subscriptionService.createSubscription(createSubscriptionDto);
     }

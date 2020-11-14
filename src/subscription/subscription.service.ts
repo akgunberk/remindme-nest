@@ -1,22 +1,21 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Subscription, SubscriptionDocument } from '../schema/subscription.schema';
-import { CreateSubscriptionDto } from '../dto/create-subscription.dto';
-import { CreateTaskDto } from 'src/dto/create-task.dto';
-import { Push, PushDocument } from 'src/schema/push.schema';
-import { Task, TaskDocument } from 'src/schema/task.schema';
+import { PushNotificationService } from 'src/services';
+import { Subscription, SubscriptionDocument, Push, PushDocument, Task, TaskDocument } from 'src/schema';
+import { CreateSubscriptionDto, CreateTaskDto } from 'src/dto';
 
 @Injectable()
 export class SubscriptionService {
     constructor(
         @InjectModel(Subscription.name) private subscriptionModel: Model<SubscriptionDocument>,
-        @InjectModel(Push.name) private pushModel: Model<PushDocument>,
-        @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
+        @InjectModel(Push.name) private PushModel: Model<PushDocument>,
+        @InjectModel(Task.name) private TaskModel: Model<TaskDocument>,
+        private pushService: PushNotificationService,
     ) { }
 
     async createSubscription(createSubscriptionDto: CreateSubscriptionDto): Promise<Subscription> {
-        const createdPush = await this.pushModel.create(createSubscriptionDto.subscription);
+        const createdPush = await this.PushModel.create(createSubscriptionDto.subscription);
         return await this.subscriptionModel.create(
             {
                 timeZone: createSubscriptionDto.timeZone,
@@ -26,15 +25,21 @@ export class SubscriptionService {
     }
 
     async createTask(id: string, createTaskDto: CreateTaskDto): Promise<Subscription> {
-        let { message, cron, active } = createTaskDto;
-        const createdTask = await this.taskModel.create({ message, cron, active });
+        let { message, cron } = createTaskDto;
+        const createdTask = await this.TaskModel.create({ message, cron });
+        this.pushService.createNotification(createdTask._id, cron);
         return await this.subscriptionModel.
             findByIdAndUpdate(id, { $push: { Task: createdTask._id } }, { new: true })
             .populate(Push.name)
             .populate({
                 path: 'Task',
-                model: this.taskModel
+                model: this.TaskModel
             });
+    }
+
+
+    async stopTask(id: string) {
+        this.pushService.stopNotification(id);
     }
 
     async findAll(): Promise<Subscription[]> {
@@ -50,7 +55,7 @@ export class SubscriptionService {
             .populate(Push.name)
             .populate({
                 path: 'Task',
-                model: this.taskModel
+                model: this.TaskModel
             }).exec();
     }
 }

@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { SubscriptionsController } from './subscription/subscription.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
+import { PushNotificationService } from './services';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    ScheduleModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -25,6 +27,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     SubscriptionModule,
   ],
   controllers: [AppController, SubscriptionsController],
-  providers: [AppService],
+  providers: [PushNotificationService],
 })
 export class AppModule { }

@@ -5,6 +5,7 @@ import { Subscription, SubscriptionSchema } from '../schema/subscription.schema'
 import { SubscriptionsController } from './subscription.controller';
 import { Push, PushSchema } from 'src/schema/push.schema';
 import { Task, TaskSchema } from 'src/schema/task.schema';
+import { PushNotificationService } from 'src/services';
 
 @Module({
     imports: [MongooseModule.forFeature([
@@ -13,7 +14,7 @@ import { Task, TaskSchema } from 'src/schema/task.schema';
         { name: Task.name, schema: TaskSchema },
     ])],
     controllers: [SubscriptionsController],
-    providers: [SubscriptionService],
+    providers: [SubscriptionService, PushNotificationService],
     exports: [SubscriptionService]
 })
 export class SubscriptionModule { }

@@ -10,9 +10,6 @@ export class Task {
 
     @Prop()
     cron: string;
-
-    @Prop()
-    active: boolean;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
